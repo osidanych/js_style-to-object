@@ -9,14 +9,22 @@
 function convertToObject(sourceString) {
   const styles = sourceString
     .split(';')
-    .filter((style) => style.length > 4)
+    .filter((style) => style.trim().length > 0)
     .reduce((prev, style) => {
       const index = style.indexOf(':');
 
-      return {
-        ...prev,
-        [style.slice(0, index).trim()]: style.slice(index + 1).trim(),
-      };
+      if (index === -1) {
+        return prev;
+      }
+
+      const key = style.slice(0, index).trim();
+      const value = style.slice(index + 1).trim();
+
+      if (key && value) {
+        prev[key] = value;
+      }
+
+      return prev;
     }, {});
 
   return styles;
