@@ -7,21 +7,19 @@
  * @return {object}
  */
 function convertToObject(sourceString) {
-  const styleObject = {};
-  const styles = sourceString.split(';').filter((style) => style.trim() !== '');
+  const styles = sourceString
+    .split(';')
+    .filter((style) => style.length > 4)
+    .reduce((prev, style) => {
+      const index = style.indexOf(':');
 
-  styles.forEach((style) => {
-    const [property, value] = style.split(':').map((item) => item.trim());
+      return {
+        ...prev,
+        [style.slice(0, index).trim()]: style.slice(index + 1).trim(),
+      };
+    }, {});
 
-    if (property && value) {
-      const camelCaseProperty = property.replace(/-([a-z])/g, (match, letter) =>
-        letter.toUpperCase());
-
-      styleObject[camelCaseProperty] = value;
-    }
-  });
-
-  return styleObject;
+  return styles;
 }
 
 module.exports = convertToObject;
